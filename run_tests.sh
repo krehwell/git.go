@@ -21,9 +21,7 @@ esac
 
 # Prefer gcc/g++ (Linux, MinGW on Windows) but fall back to cc/c++ (macOS).
 CC_BIN=cc;  command -v gcc >/dev/null 2>&1 && CC_BIN=gcc
-CXX_BIN=c++; command -v g++ >/dev/null 2>&1 && CXX_BIN=g++
-# Windows installs often have "python", not "python3".
-PY_BIN=python3; command -v python3 >/dev/null 2>&1 || PY_BIN=python
+CXX_BIN=c++; command -v g++ >/dev/null 2>&1 && CXX_BIN=g++ # Windows installs often have "python", not "python3". PY_BIN=python3; command -v python3 >/dev/null 2>&1 || PY_BIN=python
 
 compile() {
   case "$LANG_SLUG" in
@@ -95,11 +93,16 @@ for dir in tests/${FILTER}*/; do
     expected="${input%.in}.out"
     actual="$(run_one "$input")"
     if [ "$actual" = "$(cat "$expected")" ]; then
+      echo -e "\n=========================================="
       pass=$((pass+1)); echo "PASS  $input"
+      echo -e "=========================================="
     else
+      echo -e "\n"
       fail=$((fail+1)); echo "FAIL  $input"
-      echo "  expected: $(head -c 200 "$expected")"
-      echo "  got:      $(printf '%s' "$actual" | head -c 200)"
+      echo -e "=========================================="
+      echo -e "EXPECTED:\n$(head -c 200 "$expected")"
+      echo -e "------------------------------------------"
+      echo -e "GOT:\n$(printf '%s' "$actual" | head -c 200)"
     fi
   done
 done
