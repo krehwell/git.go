@@ -6,7 +6,6 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"os"
-	"strings"
 )
 
 func hashBlob(content []byte) string {
@@ -26,7 +25,10 @@ func parseBlob(content []byte) string {
 	}
 	header, body := content[:i], content[i+2:]
 
-	typ, size, _ := strings.Cut(string(header), " ")
+	typ, size := string(header), ""
+	if ii := bytes.IndexByte(header, ' '); ii != -1 {
+		typ, size = string(header[:ii]), string(header[ii+1:])
+	}
 	if !objectTypes[typ] {
 		return "ERR unknown type " + typ
 	}
