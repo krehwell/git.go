@@ -9,11 +9,9 @@ import (
 
 func hashBlob(content []byte) string {
 	header := []byte(fmt.Sprintf("blob %d\x00", len(content)))
-	// TODO: combined := append(header, content...)
-	// TODO: h := sha1.Sum(combined)
-	// TODO: return fmt.Sprintf("%x", h)
-	_ = header
-	return ""
+	combined := append(header, content...)
+	h := sha1.Sum(combined)
+	return fmt.Sprintf("%x", h)
 }
 
 func main() {
